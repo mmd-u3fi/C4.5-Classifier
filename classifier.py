@@ -1,6 +1,7 @@
 from tree import Node
 from dataset_info import DatasetInformation
 from dataset_utils import split_on_value
+from random import choice
 
 class C45(object):
     def __init__(self, dataset, target_column):
@@ -70,13 +71,15 @@ class C45(object):
         negative = 'no-recurrence-events'
         actual_response = None
         for i in range(len(dataset[self.target_column])):
-            traveresed = []
             node = self.root
-            while node.is_leaf == False:
-                traveresed.append(node.children)
-                print(traveresed)
-                # FIXME key Error
-                node = node.children[dataset[node.label][i]]
+            while True:
+                if node.is_leaf == True:
+                    break
+                elif dataset[node.label][i] in node.children:
+                    node = node.children[dataset[node.label][i]]
+                elif dataset[node.label][i] not in (node.children, positive, negative):
+                    random_decision = choice(list(node.children.keys()))
+                    node = node.children[random_decision]
             actual_response = dataset[self.target_column][i]            
             if actual_response == positive:
                 if node.label == actual_response:
@@ -91,7 +94,6 @@ class C45(object):
         accuracy = (tp + tn) / (tp + fp + tn + fn)
         recall = 0 if (tp + fn) == 0 else tp / (tp + fn)
         precision = 0 if (tp + fp) == 0 else tp / (tp + fp)
-        result = {'tp': tp, 'tn': tn, 'fp': fp, 'fn': fn}
         result = {'recall': recall, 'accuracy': accuracy, 'precision': precision}
         return result
     def print_tree(self):
