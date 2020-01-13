@@ -5,8 +5,9 @@ from dataset_utils import split_on_value
 from test_train_split import dataset_split
 
 dataset = parse_dataset()
-train, test = dataset_split(dataset, 0.25)
+train, test = dataset_split(dataset, 0.1)
 
 d_tree = C45(train, 'class')
 d_tree.create_tree()
-print(d_tree.evaluate(test))
+
+print(d_tree.evaluate(train))

@@ -10,3 +10,5 @@ class Node(object):
         print ('    ' * level + self.label + f' (level {level})')
         for child in self.children:
             self.children[child].print_tree(level+1)
+    def __repr__(self):
+        return self.label

@@ -70,7 +70,12 @@ class C45(object):
         negative = 'no-recurrence-events'
         actual_response = None
         for i in range(len(dataset[self.target_column])):
+            traveresed = []
+            node = self.root
             while node.is_leaf == False:
+                traveresed.append(node.children)
+                print(traveresed)
+                # FIXME key Error
                 node = node.children[dataset[node.label][i]]
             actual_response = dataset[self.target_column][i]            
             if actual_response == positive:
@@ -84,9 +89,14 @@ class C45(object):
                 elif node.label == actual_response:
                     tn += 1
         accuracy = (tp + tn) / (tp + fp + tn + fn)
-        recall = tp / (tp + fn)
-        precision = tp / (tp + fp)
+        recall = 0 if (tp + fn) == 0 else tp / (tp + fn)
+        precision = 0 if (tp + fp) == 0 else tp / (tp + fp)
+        result = {'tp': tp, 'tn': tn, 'fp': fp, 'fn': fn}
         result = {'recall': recall, 'accuracy': accuracy, 'precision': precision}
         return result
     def print_tree(self):
+        self.root.print_tree()
+    def save_tree_structure(self):
+        import sys
+        sys.stdout = open('tree_structure.txt', 'w+')
         self.root.print_tree()
